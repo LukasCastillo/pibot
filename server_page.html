@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+ 
+<html lang="en">
+ 
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ 
+    <title>Robot Controller</title>
+ 
+</head>
+ 
+<body>
+    <button onclick="moveMotor('F')">Forward</button> 
+    <button onclick="moveMotor('B')">Back</button> 
+    <button onclick="moveMotor('L')">Left</button> 
+    <button onclick="moveMotor('R')">Right</button> 
+    <button onclick="moveMotor('S')">Stop</button> 
+</body>
+
+<script>
+ 
+    const socket = new WebSocket('ws://localhost:8000');
+ 
+    socket.addEventListener('open', function (event) {
+        //socket.send('Connection Established');
+    });
+    
+    socket.addEventListener('message', function (event) {
+        console.log(event.data);
+    });
+
+    const moveMotor = (m) => {
+        console.log(`M ${m}`);
+        socket.send(`M ${m}`);
+    }
+    
+    const contactServer = (m) => {
+        console.log(m);
+        socket.send(m);
+    }
+ 
+</script>
+</html>
