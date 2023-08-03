@@ -1,15 +1,12 @@
-import time
 import serial
-import asyncio
-import websockets
+from websockets.sync.server import serve
 import threading
-import http.server
 
 websocket_server = None
 websocket_list = []
 
 ser = serial.Serial(
-	port='COM4', # Change this according to connection methods, e.g. /dev/ttyUSB0
+	port='COM4', # Change this according to connection methods, e.g. /dev/ttyACM0
 	baudrate = 115200,
 	parity=serial.PARITY_NONE,
 	stopbits=serial.STOPBITS_ONE,
@@ -34,7 +31,7 @@ def start_websocket_server():
 				ser.write(f"{message}\n".encode('utf-8'))
 
 	global websocket_server
-	with websockets.sync.server.serve(handler, "localhost", 8000) as server:
+	with serve(handler, "192.168.100.154", 8000) as server:
 		websocket_server = server
 		server.serve_forever()
 
