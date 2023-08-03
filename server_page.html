@@ -16,12 +16,18 @@
     <button onclick="moveMotor('B')">Back</button> 
     <button onclick="moveMotor('L')">Left</button> 
     <button onclick="moveMotor('R')">Right</button> 
-    <button onclick="moveMotor('S')">Stop</button> 
+    <button onclick="moveMotor('S')">Stop</button>
+
+    <div id="logs">
+
+    </div>
 </body>
 
 <script>
  
     const socket = new WebSocket('ws://localhost:8000');
+    
+    const logElement = document.getElementById("logs");
  
     socket.addEventListener('open', function (event) {
         //socket.send('Connection Established');
@@ -29,6 +35,18 @@
     
     socket.addEventListener('message', function (event) {
         console.log(event.data);
+
+        let data = String(event.data);
+        if(data.startsWith("M")){
+            const element = document.createElement("div");
+            element.classList.add("log-list");
+            element.innerText = data;
+
+            logElement.appendChild(element);
+            if(logElement.childElementCount > 50){
+                logElement.removeChild(logElement.firstChild)
+            }
+        }
     });
 
     const moveMotor = (m) => {
