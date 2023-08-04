@@ -57,11 +57,14 @@ try:
 			inp = ser.read_until(b'\n', 1024).decode('utf-8')[:-1]
 			
 			with websocket_lock:
+				last_socket = None
 				try:
 					for websocket in websocket_list:
+						last_socket = websocket
 						websocket.send(inp)
 				except:
 					print("Websocket disconnected")
+					if last_socket != None: websocket_list.remove(last_socket)
 					pass
 
 			# if inp[0] == 'U':
