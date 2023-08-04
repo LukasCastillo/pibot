@@ -23,12 +23,16 @@ ser = serial.Serial(
 
 def start_websocket_server():
 	def handler(websocket):
-		print(websocket)
-		websocket_list.append(websocket)
-		for message in websocket:
-			message = str(message)
-			if message.startswith("M"):
-				ser.write(f"{message}\n".encode('utf-8'))
+		try:
+			print(websocket)
+			websocket_list.append(websocket)
+			for message in websocket:
+				message = str(message)
+				if message.startswith("M"):
+					ser.write(f"{message}\n".encode('utf-8'))
+		except Exception as e:
+			print(e.with_traceback)
+			websocket_list.remove(websocket)
 
 	global websocket_server
 	with serve(handler, "192.168.100.154", 8000) as server:
