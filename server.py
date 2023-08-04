@@ -4,6 +4,7 @@ import threading
 
 websocket_server = None
 websocket_list = []
+websocket_lock = threading.Lock()
 #test
 ser = serial.Serial(
 	port='/dev/ttyACM0', # Change this according to connection methods, e.g. /dev/ttyACM0
@@ -25,14 +26,16 @@ def start_websocket_server():
 	def handler(websocket):
 		try:
 			print(websocket)
-			websocket_list.append(websocket)
+			with websocket_lock: websocket_list.append(websocket)
 			for message in websocket:
 				message = str(message)
 				if message.startswith("M"):
 					ser.write(f"{message}\n".encode('utf-8'))
 		except Exception as e:
-			print(e.with_traceback)
-			websocket_list.remove(websocket)
+			print("Error: ", e.with_traceback)
+			with websocket_lock: 
+				if websocket in websocket_list: websocket_list.remove(websocket)
+			print("Websocket disconnected!")
 
 	global websocket_server
 	with serve(handler, "192.168.100.154", 8000) as server:
@@ -53,8 +56,12 @@ try:
 		if ser.in_waiting > 0:
 			inp = ser.read_until(b'\n', 1024).decode('utf-8')[:-1]
 			
-			for websocket in websocket_list:
-				websocket.send(inp)
+			with websocket_lock:
+				try:
+					for websocket in websocket_list:
+						websocket.send(inp)
+				except:
+					pass
 
 			# if inp[0] == 'U':
 			# 	ulF, ulB, ulL, ulR = map(float, inp.split()[1:])
@@ -63,7 +70,7 @@ try:
 			# 	else: ser.write("M S\n".encode('utf-8'))
 except KeyboardInterrupt: pass
 except Exception as e:
-	print(e.with_traceback)
+	print("Error", e.with_traceback)
 finally:
 	print("Stopping")
 	for w in websocket_list: w.close()
