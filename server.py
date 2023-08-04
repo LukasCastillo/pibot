@@ -63,7 +63,7 @@ try:
 			# 	else: ser.write("M S\n".encode('utf-8'))
 except KeyboardInterrupt: pass
 except Exception as e:
-	print(e)
+	print(e.with_traceback)
 finally:
 	print("Stopping")
 	for w in websocket_list: w.close()
