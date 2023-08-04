@@ -6,7 +6,7 @@ websocket_server = None
 websocket_list = []
 
 ser = serial.Serial(
-	port='COM4', # Change this according to connection methods, e.g. /dev/ttyACM0
+	port='/dev/ttyACM0', # Change this according to connection methods, e.g. /dev/ttyACM0
 	baudrate = 115200,
 	parity=serial.PARITY_NONE,
 	stopbits=serial.STOPBITS_ONE,
