@@ -4,7 +4,7 @@ import threading
 
 websocket_server = None
 websocket_list = []
-
+#test
 ser = serial.Serial(
 	port='/dev/ttyACM0', # Change this according to connection methods, e.g. /dev/ttyACM0
 	baudrate = 115200,
