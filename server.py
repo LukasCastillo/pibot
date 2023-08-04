@@ -61,6 +61,7 @@ try:
 					for websocket in websocket_list:
 						websocket.send(inp)
 				except:
+					print("Websocket disconnected")
 					pass
 
 			# if inp[0] == 'U':
